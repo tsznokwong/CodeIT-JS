@@ -5,7 +5,7 @@ router.post("/", function (req, res) {
   let number_of_salads = parseInt(req.body["number_of_salads"]);
   let salad_prices_street_map = req.body["salad_prices_street_map"];
 
-  //   console.log(req.body);
+  console.log(req.body);
   let minimum = salad_prices_street_map.reduce((min, street) => {
     let start = 0;
     let end = 0;
