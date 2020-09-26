@@ -5,7 +5,7 @@ router.post("/", function (req, res) {
   let number_of_salads = parseInt(req.body["number_of_salads"]);
   let salad_prices_street_map = req.body["salad_prices_street_map"];
 
-  console.log(req.body);
+  console.log(number_of_salads);
   let minimum = salad_prices_street_map.reduce((min, street) => {
     let start = 0;
     let end = 0;
@@ -15,20 +15,19 @@ router.post("/", function (req, res) {
     while (end < length) {
       if (street[end] === "X") {
         start = end + 1;
+        totalPrice = 0;
         end++;
         continue;
       }
-      let price = parseInt(street[end]);
-      totalPrice += price;
+      totalPrice += parseInt(street[end]);
       if (end - start + 1 === number_of_salads) {
         currentMin = Math.min(currentMin, totalPrice);
-      } else if (end - start + 1 > number_of_salads) {
         totalPrice -= street[start];
-        currentMin = Math.min(currentMin, totalPrice);
         start++;
       }
       end++;
     }
+    console.log(street, currentMin);
     return currentMin;
   }, Number.MAX_SAFE_INTEGER);
 
