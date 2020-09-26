@@ -11,6 +11,7 @@ var fruitBasket = require("./routes/fruit-basket").default;
 var gmo = require("./routes/gmo").default;
 var cleanFloor = require("./routes/clean-floor").default;
 var trace = require("./routes/contact-trace").default;
+var boredScribe = require("./routes/bored-scribe").default;
 
 var index = require("./routes/index");
 var users = require("./routes/users");
@@ -37,6 +38,7 @@ app.use("/fruitbasket", fruitBasket);
 app.use("/intelligent-farming", gmo);
 app.use("/clean_floor", cleanFloor);
 app.use("/contact_trace", trace);
+app.use("/bored-scribe", boredScribe);
 
 // catch 404 and forward to error handler`
 app.use(function (req, res, next) {
