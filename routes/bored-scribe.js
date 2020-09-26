@@ -1,5 +1,6 @@
 import { Router } from "express";
 var router = Router();
+var request_sync = require('sync-request');
 
 function doBreak(text) {
     // Array of pairs (int shift, float entropy), sorted in ascending order of entropy
@@ -96,6 +97,7 @@ function reverse(s) {
           }
       }
     }
+    console.log('sub palindromes:', subStrings)
     return subStrings.length;
   }
 
@@ -135,57 +137,51 @@ function asciiSum(s) {
 }
 
 router.post('/', function (req, res) {
-    console.log("body: ",req.body)
+    // console.log("body: ",req.body)
     let result = []
     for (let i = 0; i < req.body.length; i ++){
-        console.log("progress: ", i+1, " / ", req.body.length)
         let id = req.body[i]['id'];
+        console.log("progress:", id, " / ", req.body.length)
         let encryptedText = req.body[i]['encryptedText'];
         let [originalText, _] = doBreak(encryptedText);
         const originalTextGuard = originalText
-        console.log('originalText: ',originalText)
+        console.log('inputText:', encryptedText)
+        console.log('decryptedText:',originalText)
+        console.log()
         let encryptionCount = 0;
         while (originalText != encryptedText) {
+            console.log('reconstructing...')
             let palindromeCount = countPalindromesInString(originalText);
             let longestPalindromeSubStr = longestPalindrome(originalText);
-            // console.log('<palindromeCount>', palindromeCount)
-            // console.log('<longestPalindromeSubStr>', longestPalindromeSubStr)
+            console.log('longestPalindromeSubStr:', longestPalindromeSubStr)
             let shift = asciiSum(longestPalindromeSubStr) + palindromeCount
+            console.log('asciiSum:', asciiSum(longestPalindromeSubStr))
+            console.log('palindromeCount:', palindromeCount)
+            console.log('shift:', shift)
             originalText = encrypt(originalText, shift)
-            // console.log('<><><> ', originalText)
+            console.log('originalText:', originalText)
+            console.log()
             encryptionCount += 1
-            if (encryptionCount > 10){
+            if (encryptionCount > 80){
                 console.log('early stopped');
                 break;
             }
         }
+
+        console.log()
+        var respython = request_sync('POST', 'http://127.0.0.1:8080/word_segmentation', {
+            json: {s: originalTextGuard},
+        });
+        var fullText = JSON.parse(respython.getBody('utf8'));
         
         result.push({
             id,
             encryptionCount,
-            originalText: originalTextGuard
+            originalText:  fullText
         })
     }
-    console.log('res: ', JSON.stringify(result))
-    res.send(JSON.stringify(result));
+    console.log('res:', JSON.stringify(result))
+    res.send(result);
 });
-
-// router.post('/', function (req, res) {
-//     console.log("body: ",req.body)
-//     let result = []
-//     for (let i = 0; i < req.body.length; i ++){
-//         console.log("progress: ", i+1, " / ", req.body.length)
-//         let id = req.body[i]['id'];
-//         let originalText = req.body[i]['encryptedText'];
-//         result.push({
-//             id,
-//             encryptionCount: 1,
-//             originalText
-//         })
-//     }
-//     console.log('res: ', JSON.stringify(result))
-//     res.send(JSON.stringify(result));
-// });
-
 
 export default router;
