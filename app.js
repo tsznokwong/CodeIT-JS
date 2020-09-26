@@ -9,6 +9,7 @@ var square = require("./routes/square").default;
 var salidSpree = require("./routes/salad-spree").default;
 var fruitBasket = require("./routes/fruit-basket").default;
 var gmo = require("./routes/gmo").default;
+var cleanFloor = require("./routes/clean-floor").default;
 
 var index = require("./routes/index");
 var users = require("./routes/users");
@@ -33,6 +34,7 @@ app.use("/square", square);
 app.use("/salad-spree", salidSpree);
 app.use("/fruitbasket", fruitBasket);
 app.use("/intelligent-farming", gmo);
+app.use("/clean_floor", cleanFloor);
 
 // catch 404 and forward to error handler`
 app.use(function (req, res, next) {
