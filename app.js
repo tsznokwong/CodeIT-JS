@@ -10,6 +10,7 @@ var salidSpree = require("./routes/salad-spree").default;
 var fruitBasket = require("./routes/fruit-basket").default;
 var gmo = require("./routes/gmo").default;
 var cleanFloor = require("./routes/clean-floor").default;
+var slsm = require("./routes/slsm").default;
 var trace = require("./routes/contact-trace").default;
 
 var index = require("./routes/index");
@@ -36,6 +37,7 @@ app.use("/salad-spree", salidSpree);
 app.use("/fruitbasket", fruitBasket);
 app.use("/intelligent-farming", gmo);
 app.use("/clean_floor", cleanFloor);
+app.use("/slsm", slsm);
 app.use("/contact_trace", trace);
 
 // catch 404 and forward to error handler`
