@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { token } from "morgan";
 var router = Router();
 
 router.post("/", function (req, res) {
@@ -12,6 +13,8 @@ router.post("/", function (req, res) {
 
   let graph = getGraph(roads);
   console.log(graph.vertice);
+  let data = dijkstra(graph, { x: start.x, y: start.y - 2.5 });
+  console.log(data);
 
   var instructions = [];
 
@@ -104,8 +107,67 @@ const getGraph = (roads) => {
   return { edges: edges, vertice: vertice };
 };
 
+const dijkstra = (graph, source) => {
+  let verticeData = {};
+  let queue = [];
+  Object.keys(graph.vertice).forEach((vertex) => {
+    verticeData[vertex] = {
+      dist: Number.MAX_SAFE_INTEGER,
+      prev: undefined,
+    };
+    queue.push(vertex);
+  });
+  let sourceKey = getCoordinateKey(source);
+  verticeData[sourceKey].dist = 0;
+
+  const dist = (u, edge) => {
+    if (edge.type === "street") {
+      return Math.abs(edge.from.x - edge.to.x);
+    } else {
+      return Math.abs(edge.from.y - edge.to.y);
+    }
+  };
+
+  while (queue.length > 0) {
+    // find min dist vertex
+    let mininum = Number.MAX_SAFE_INTEGER;
+    let u = undefined;
+    let i = undefined;
+    queue.forEach((vertex, index) => {
+      if (verticeData[vertex].dist < mininum) {
+        u = vertex;
+        mininum = verticeData[vertex].dist;
+        i = index;
+      }
+    });
+    // remove u
+    u = queue.splice(i, 1);
+
+    graph.vertice[u].adjacentEdges.forEach((edge) => {
+      let toKey = getCoordinateKey(edge.to);
+      if (!queue.includes(toKey)) {
+        return;
+      }
+      let alt = mininum + dist(u, edge);
+      if (alt < verticeData[toKey].dist) {
+        verticeData[toKey].dist = alt;
+        verticeData[toKey].prev = u;
+      }
+    });
+  }
+  return verticeData;
+};
+
 const getCoordinateKey = (p) => {
   return p.x.toString() + ", " + p.y.toString();
+};
+
+const parseCoordinateKey = (key) => {
+  let coor = key.split(", ");
+  return {
+    x: coor[0],
+    y: coor[1],
+  };
 };
 
 const isRoadIntersect = (street, avenue) => {
@@ -140,11 +202,14 @@ const isAvenueDownJoinStreet = (street, avenue) => {
 
 // motion system
 const getRoadTime = (current_speed, end_speed, distance) => {
-  return 2.0 * distance / (current_speed + end_speed);
+  return (2.0 * distance) / (current_speed + end_speed);
 };
 
 const getAcceleration = (current_speed, end_speed, distance) => {
-  return 1.0 * (current_speed * current_speed - end_speed * end_speed) / (2 * distance);
+  return (
+    (1.0 * (current_speed * current_speed - end_speed * end_speed)) /
+    (2 * distance)
+  );
 };
 
 function motionControl() {
