@@ -201,17 +201,38 @@ const isAvenueDownJoinStreet = (street, avenue) => {
 };
 
 // motion system
+const getRoadDistance = (road) => {
+  if (road.type === "street") {
+    return Math.abs(road.from.x - road.to.x);
+  } else {
+    return Math.abs(road.from.y - road.to.y);
+  }
+};
+
 const getRoadTime = (current_speed, end_speed, distance) => {
   return (2.0 * distance) / (current_speed + end_speed);
 };
 
-const getAcceleration = (current_speed, end_speed, distance) => {
+const getRoadAcceleration = (current_speed, end_speed, distance) => {
   return (
     (1.0 * (current_speed * current_speed - end_speed * end_speed)) /
     (2 * distance)
   );
 };
 
-function motionControl() {
-  let current_speed = 0;
-}
+const getTurnDistance = (isLeftTurn) => {
+  if (isLeftTurn) {
+    return (2 * Math.PI * 2.5) / 4;
+  } else {
+    return (2 * Math.PI * 7.5) / 4;
+  }
+};
+
+const getTurnTime = (isLeftTurn, speed = 5.0) => {
+  // assume const speed 5 m/s
+  if (isLeftTurn) {
+    return (2 * Math.PI * 2.5) / 4 / speed;
+  } else {
+    return (2 * Math.PI * 7.5) / 4 / speed;
+  }
+};
