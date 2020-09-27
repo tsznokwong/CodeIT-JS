@@ -73,10 +73,8 @@ const getGraph = (roads) => {
       ) {
         splitStreet(street, joint);
       } else if (isRoadIntersect(street, avenue)) {
-        console.log(streets, avenues);
         splitAvenue(avenue, joint);
         splitStreet(street, joint);
-        console.log(streets, avenues);
       } else {
       }
     }
@@ -117,7 +115,6 @@ const isRoadIntersect = (street, avenue) => {
   let maxX = Math.max(street.from.x, street.to.x);
   let minX = Math.min(street.from.x, street.to.x);
   let inRangeX = maxX > avenue.from.x && avenue.from.x > minX;
-  console.log(inRangeY, inRangeX);
   return inRangeX && inRangeY;
 };
 
