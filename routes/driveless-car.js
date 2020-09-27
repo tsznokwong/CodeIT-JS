@@ -117,3 +117,16 @@ const isAvenueDownJoinStreet = (street, avenue) => {
   let minY = Math.min(avenue.from.y, avenue.to.y);
   return street.from.y === minY;
 };
+
+// motion system
+const getRoadTime = (current_speed, end_speed, distance) => {
+  return 2.0 * distance / (current_speed + end_speed);
+};
+
+const getAcceleration = (current_speed, end_speed, distance) => {
+  return 1.0 * (current_speed * current_speed - end_speed * end_speed) / (2 * distance);
+};
+
+function motionControl() {
+  let current_speed = 0;
+}
