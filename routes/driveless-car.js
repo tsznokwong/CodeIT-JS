@@ -11,7 +11,7 @@ router.post("/", function (req, res) {
   let vehicle = input.vehicle;
 
   let graph = getGraph(roads);
-  console.log(graph.edges);
+  console.log(graph.vertice);
 
   var instructions = [];
 
@@ -83,8 +83,31 @@ const getGraph = (roads) => {
     edges.push(streets.shift());
   }
   edges = edges.concat(avenues);
+  let vertice = {};
+  edges.forEach((edge) => {
+    let fromKey = getCoordinateKey(edge.from);
+    let toKey = getCoordinateKey(edge.to);
+    if (vertice[fromKey] === undefined) {
+      vertice[fromKey] = {
+        adjacentEdges: [],
+      };
+    }
+    if (vertice[toKey] === undefined) {
+      vertice[toKey] = {
+        adjacentEdges: [],
+      };
+    }
+    vertice[fromKey].adjacentEdges.push(edge);
+    let reverseEdge = JSON.parse(JSON.stringify(edge));
+    [reverseEdge.from, reverseEdge.to] = [reverseEdge.to, reverseEdge.from];
+    vertice[toKey].adjacentEdges.push(reverseEdge);
+  });
 
-  return { edges: edges, vertice: [] };
+  return { edges: edges, vertice: vertice };
+};
+
+const getCoordinateKey = (p) => {
+  return p.x.toString() + ", " + p.y.toString();
 };
 
 const isRoadIntersect = (street, avenue) => {
