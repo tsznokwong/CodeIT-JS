@@ -15,6 +15,7 @@ var trace = require("./routes/contact-trace").default;
 var boredScribe = require("./routes/bored-scribe").default;
 var yinYang = require("./routes/yin-yang").default;
 var driverlessCar = require("./routes/driveless-car").default;
+var supermarket = require("./routes/supermarket").default;
 
 var index = require("./routes/index");
 var users = require("./routes/users");
@@ -45,6 +46,7 @@ app.use("/contact_trace", trace);
 app.use("/bored-scribe", boredScribe);
 app.use("/yin-yang", yinYang);
 app.use("/driverless-car", driverlessCar);
+app.use("/supermarket", supermarket);
 
 // catch 404 and forward to error handler`
 app.use(function (req, res, next) {
