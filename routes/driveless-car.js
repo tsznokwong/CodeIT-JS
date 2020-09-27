@@ -121,11 +121,12 @@ const dijkstra = (graph, source) => {
   verticeData[sourceKey].dist = 0;
 
   const dist = (u, edge) => {
-    if (edge.type === "street") {
-      return Math.abs(edge.from.x - edge.to.x);
-    } else {
-      return Math.abs(edge.from.y - edge.to.y);
-    }
+    return getFastestPossibleTime(edge);
+    // if (edge.type === "street") {
+    //   return Math.abs(edge.from.x - edge.to.x);
+    // } else {
+    //   return Math.abs(edge.from.y - edge.to.y);
+    // }
   };
 
   while (queue.length > 0) {
@@ -201,6 +202,12 @@ const isAvenueDownJoinStreet = (street, avenue) => {
 };
 
 // motion system
+const getFastestPossibleTime = (road) => {
+  let maxSpeed = road.maxSpeed;
+  let dist = getRoadDistance(road);
+  return getRoadTime(maxSpeed, maxSpeed, dist);
+}
+
 const getRoadDistance = (road) => {
   if (road.type === "street") {
     return Math.abs(road.from.x - road.to.x);
