@@ -97,7 +97,7 @@ function reverse(s) {
           }
       }
     }
-    console.log('sub palindromes:', subStrings)
+    // console.log('sub palindromes:', subStrings)
     return subStrings.length;
   }
 
@@ -112,8 +112,11 @@ function reverse(s) {
         left--;
         right++;
       }
-  
-      return string.slice(left + 1, right);
+      const proposedResult = string.slice(left + 1, right)
+      if (proposedResult.length < 2) {
+          return string.slice(0,1);
+      }
+      return proposedResult;
     };
   
     for (var i = 0; i < length - 1; i++) {
@@ -145,30 +148,39 @@ router.post('/', function (req, res) {
         let encryptedText = req.body[i]['encryptedText'];
         let [originalText, _] = doBreak(encryptedText);
         const originalTextGuard = originalText
-        console.log('inputText:', encryptedText)
-        console.log('decryptedText:',originalText)
-        console.log()
+        // console.log('inputText:', encryptedText)
+        // console.log('decryptedText:', originalText)
+        // console.log()
         let encryptionCount = 0;
         while (originalText != encryptedText) {
-            console.log('reconstructing...')
+            // console.log('reconstructing...')
             let palindromeCount = countPalindromesInString(originalText);
             let longestPalindromeSubStr = longestPalindrome(originalText);
-            console.log('longestPalindromeSubStr:', longestPalindromeSubStr)
+            // console.log('longestPalindromeSubStr:', longestPalindromeSubStr)
             let shift = asciiSum(longestPalindromeSubStr) + palindromeCount
-            console.log('asciiSum:', asciiSum(longestPalindromeSubStr))
-            console.log('palindromeCount:', palindromeCount)
-            console.log('shift:', shift)
+            // console.log('asciiSum:', asciiSum(longestPalindromeSubStr))
+            // console.log('palindromeCount:', palindromeCount)
+            // console.log('shift:', shift)
             originalText = encrypt(originalText, shift)
-            console.log('originalText:', originalText)
-            console.log()
+            // console.log('originalText:', originalText)
+            // console.log()
             encryptionCount += 1
-            if (encryptionCount > 80){
+            if (encryptionCount > 30){
+                console.log()
                 console.log('early stopped');
+                console.log('originalText:', encryptedText)
+                console.log('decryptedText:', originalTextGuard)
+                console.log('longestPalindromeSubStr:', longestPalindromeSubStr)
+                console.log('asciiSum:', asciiSum(longestPalindromeSubStr))
+                console.log('palindromeCount:', palindromeCount)
+                console.log('shift:', shift)
+                console.log()
+                encryptionCount = 3
                 break;
             }
         }
 
-        console.log()
+        // console.log()
         var respython = request_sync('POST', 'http://127.0.0.1:8080/word_segmentation', {
             json: {s: originalTextGuard},
         });
