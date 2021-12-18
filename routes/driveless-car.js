@@ -206,7 +206,7 @@ const getFastestPossibleTime = (road) => {
   let maxSpeed = road.maxSpeed;
   let dist = getRoadDistance(road);
   return getRoadTime(maxSpeed, maxSpeed, dist);
-}
+};
 
 const getRoadDistance = (road) => {
   if (road.type === "street") {
